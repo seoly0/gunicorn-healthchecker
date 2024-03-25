@@ -3,10 +3,14 @@ from json import dumps
 from gunicorn_healthchecker.state import State
 from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
 
+class RequestHandler(WSGIRequestHandler):
+  def log_message(self, format: str, *args) -> None:
+    pass
+
 class Server():
 
   def __init__(self, host: str, port: int) -> None:
-    self.wsgi = WSGIServer((host, port), WSGIRequestHandler)
+    self.wsgi = WSGIServer((host, port), RequestHandler)
     self.wsgi.set_app(self.app)
     self.thread = threading.Thread(target=self.wsgi.serve_forever)
 
